@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13-Oct-2017 13:23:19 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.ngs.model.Heartbeat" table="heartbeat" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="systems" class="com.ngs.model.Systems" fetch="select">
+            <column name="systems" not-null="true" />
+        </many-to-one>
+        <property name="ip" type="string">
+            <column name="ip" length="45" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="45" />
+        </property>
+        <property name="regtime" type="timestamp">
+            <column name="regtime" length="0" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+    </class>
+</hibernate-mapping>

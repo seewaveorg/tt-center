@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13-Oct-2017 13:23:19 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.ngs.model.SystemsHasParameters" table="systems_has_parameters" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="parameters" class="com.ngs.model.Parameters" fetch="select">
+            <column name="parameters" not-null="true" />
+        </many-to-one>
+        <many-to-one name="systems" class="com.ngs.model.Systems" fetch="select">
+            <column name="systems" not-null="true" />
+        </many-to-one>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <set name="periodics" table="periodic" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="systems_has_parameters" not-null="true" />
+            </key>
+            <one-to-many class="com.ngs.model.Periodic" />
+        </set>
+    </class>
+</hibernate-mapping>

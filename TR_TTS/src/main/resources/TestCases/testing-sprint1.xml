@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<suite name="Sprint-1 test suite" parallel="false">
-  <test name="Patient Registration">
-    <classes>
-    <!--  <class name="com.ngs.test.TestPatientDaoImpl"/>   --> 
-    </classes>
-  </test>
-</suite>

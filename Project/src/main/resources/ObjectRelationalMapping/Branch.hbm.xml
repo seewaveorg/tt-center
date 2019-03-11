@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13-Oct-2017 13:23:19 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.ngs.model.Branch" table="branch" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="company" class="com.ngs.model.Company" fetch="select">
+            <column name="company" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" length="45" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="45" />
+        </property>
+        <property name="lon" type="string">
+            <column name="lon" length="45" />
+        </property>
+        <property name="lat" type="string">
+            <column name="lat" length="45" />
+        </property>
+        <property name="regtime" type="timestamp">
+            <column name="regtime" length="0" />
+        </property>
+        <property name="spare1" type="string">
+            <column name="spare1" length="45" />
+        </property>
+        <property name="spare2" type="string">
+            <column name="spare2" length="45" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <set name="systemses" table="systems" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="branch" />
+            </key>
+            <one-to-many class="com.ngs.model.Systems" />
+        </set>
+    </class>
+</hibernate-mapping>

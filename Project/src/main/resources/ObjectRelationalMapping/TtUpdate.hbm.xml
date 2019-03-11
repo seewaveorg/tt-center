@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13-Oct-2017 13:23:19 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.ngs.model.TtUpdate" table="tt_update" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tt" class="com.ngs.model.Tt" fetch="select">
+            <column name="tt" not-null="true" />
+        </many-to-one>
+        <many-to-one name="user" class="com.ngs.model.User" fetch="select">
+            <column name="user" not-null="true" />
+        </many-to-one>
+        <property name="comment" type="string">
+            <column name="comment" />
+        </property>
+        <property name="regtime" type="timestamp">
+            <column name="regtime" length="0" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <property name="info" type="string">
+            <column name="info" />
+        </property>
+        <set name="alertses" table="alerts" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="tt_update" />
+            </key>
+            <one-to-many class="com.ngs.model.Alerts" />
+        </set>
+    </class>
+</hibernate-mapping>

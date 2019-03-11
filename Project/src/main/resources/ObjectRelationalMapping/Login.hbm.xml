@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13-Oct-2017 13:23:19 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.ngs.model.Login" table="login" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="rolls" class="com.ngs.model.Rolls" fetch="select">
+            <column name="rolls" not-null="true" />
+        </many-to-one>
+        <many-to-one name="user" class="com.ngs.model.User" fetch="select">
+            <column name="user" not-null="true" />
+        </many-to-one>
+        <property name="username" type="string">
+            <column name="username" length="45" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <set name="logs" table="log" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="login" not-null="true" />
+            </key>
+            <one-to-many class="com.ngs.model.Log" />
+        </set>
+    </class>
+</hibernate-mapping>
