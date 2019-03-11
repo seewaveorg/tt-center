@@ -1,0 +1,17 @@
+USE master;
+
+insert into user_levels (user_level) values ('super_admin'),('admin'),('super_user'),('user');
+insert into users (username,password,enabled,client_id,user_level_id,user_group_id) values ('buddika','$2a$10$9wOI8Wv7gQ6fmfGLa3J7i.QEtdAZ9CM9/emZOUgiOliEsBvqFOLji',TRUE,0,0,0);
+insert into clients (client_name,created_user_id,created_time) values('zmessenger',1,now());
+insert into roles (role_name) values ('ROLE_CLIENTMGT'),('ROLE_USERMGT'),('ROLE_INDSMGT'),('ROLE_BLKSMGT'),('ROLE_NLMGT'),('ROLE_RTMGT'),('ROLE_NIMGT'),('ROLE_NIGRMGT'),('ROLE_RTPMGT'),('ROLE_OM'),('ROLE_RPT');
+insert into user_roles (user_id,role_id) values (1,1),(1,2),(1,7),(1,10),(1,11);
+insert into ni_types (ni_type) values ('SMPP'),('HTTP'),('VXML'),('UI');
+insert into smpp_bind_modes (bind_mode) values ('Transmitter'),('Receiver'),('Transceiver');
+insert into ni_connection_types (connection_type) values ('Client'),('Server');
+insert into number_list_types (number_list_type) values ('Distribution List'),('Blacklist'),('Contact');
+insert into priorities (priority) values ('Normal'),('High');
+
+red", "blue", "green", "teal", "orange", "brown","yellow","purple","pink","lime","magenta","dark
+
+call sp_modify_client(42,'unil',true,1000,5,0)$$
+call sp_create_number_list(55,'',

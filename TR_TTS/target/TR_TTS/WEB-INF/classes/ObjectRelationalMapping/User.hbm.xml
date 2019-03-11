@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 28-Jul-2017 12:19:42 by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="com.ngs.model.User" table="user" catalog="ttsystem">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="company" class="com.ngs.model.Company" fetch="select">
+            <column name="company" not-null="true" />
+        </many-to-one>
+        <many-to-one name="personType" class="com.ngs.model.PersonType" fetch="select">
+            <column name="person_type" not-null="true" />
+        </many-to-one>
+        <property name="title" type="string">
+            <column name="title" length="15" not-null="true" />
+        </property>
+        <property name="initials" type="string">
+            <column name="initials" length="15" not-null="true" />
+        </property>
+        <property name="firstname" type="string">
+            <column name="firstname" length="100" />
+        </property>
+        <property name="lastname" type="string">
+            <column name="lastname" length="100" not-null="true" />
+        </property>
+        <property name="birthdate" type="timestamp">
+            <column name="birthdate" length="19" />
+        </property>
+        <property name="gender" type="string">
+            <column name="gender" length="15" not-null="true" />
+        </property>
+        <property name="mobile" type="string">
+            <column name="mobile" length="45" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="100" />
+        </property>
+        <property name="nic" type="string">
+            <column name="nic" length="45" />
+        </property>
+        <property name="addressLine1" type="string">
+            <column name="`address_line 1`" length="100" not-null="true" />
+        </property>
+        <property name="addressLine2" type="string">
+            <column name="`address_line 2`" length="100" not-null="true" />
+        </property>
+        <property name="addressLine3" type="string">
+            <column name="`address_line 3`" length="100" not-null="true" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <property name="regtime" type="timestamp">
+            <column name="regtime" length="19" not-null="true" />
+        </property>
+        <set name="logins" table="login" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user" not-null="true" />
+            </key>
+            <one-to-many class="com.ngs.model.Login" />
+        </set>
+        <set name="userHasDepartments" table="user_has_department" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user" not-null="true" />
+            </key>
+            <one-to-many class="com.ngs.model.UserHasDepartment" />
+        </set>
+        <set name="tts" table="tt" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="current_owner" />
+            </key>
+            <one-to-many class="com.ngs.model.Tt" />
+        </set>
+        <set name="ttUpdates" table="tt_update" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user" not-null="true" />
+            </key>
+            <one-to-many class="com.ngs.model.TtUpdate" />
+        </set>
+        <set name="alertses" table="alerts" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user" not-null="true" />
+            </key>
+            <one-to-many class="com.ngs.model.Alerts" />
+        </set>
+        <set name="systemsHasUsers" table="systems_has_user" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="user" not-null="true" />
+            </key>
+            <one-to-many class="com.ngs.model.SystemsHasUser" />
+        </set>
+    </class>
+</hibernate-mapping>

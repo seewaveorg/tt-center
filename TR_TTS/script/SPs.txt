@@ -1,0 +1,882 @@
+delimiter $$
+create procedure sp_get_user_details (in vusername varchar(45))
+begin
+select * from users where username=vusername;
+end$$
+
+/********************************************************/
+delimiter $$
+create procedure sp_create_client (in vclient_name varchar(30), in vdescription varchar(50), in vinitial_credit int, in vthreshold_credit int, in vcreated_user_id int)
+
+begin
+select count(*) into @count from clients where client_name=vclient_name;
+if (@count>0) then	/* client already exists? */
+  set @vclient_id = -1;
+else
+insert into clients (client_name, description, created_user_id, created_time, credit, credit_threshold) values (vclient_name, vdescription, vcreated_user_id, now(), vinitial_credit, vthreshold_credit);
+select last_insert_id() into @vclient_id;
+set @vdb_name=concat ('db',@vclient_id);
+
+set @sqlstring=CONCAT('CREATE DATABASE ', @vdb_name,' DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ', @vdb_name , '.ni_groups(
+ni_group_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+ni_group_name VARCHAR(15) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (ni_group_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.user_groups(
+user_group_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+user_group_name VARCHAR(15) NOT NULL,
+credit INT(10) UNSIGNED,
+PRIMARY KEY (user_group_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.masks(
+mask_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+mask VARCHAR(20) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (mask_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.mask_config(
+record_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+mask_id INT(6) UNSIGNED NOT NULL,
+user_group_id INT(6) UNSIGNED NOT NULL,
+PRIMARY KEY (record_id),
+FOREIGN KEY (mask_id) REFERENCES masks(mask_id),
+FOREIGN KEY (user_group_id) REFERENCES user_groups(user_group_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.ni_group_config(
+ni_group_id INT(6) UNSIGNED NOT NULL,
+ni_id INT(6) UNSIGNED NOT NULL,
+weight INT(6) UNSIGNED NOT NULL,
+FOREIGN KEY (ni_group_id) REFERENCES ni_groups(ni_group_id),
+FOREIGN KEY (ni_id) REFERENCES master.ni(ni_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.routing_rules(
+routing_rule_id INT(6) UNSIGNED AUTO_INCREMENT,
+source VARCHAR(30) NOT NULL,
+destination VARCHAR(30) NOT NULL,
+keyword VARCHAR(50) NOT NULL,
+ni_group_id INT(6) UNSIGNED NOT NULL,
+PRIMARY KEY (routing_rule_id),
+FOREIGN KEY (ni_group_id) REFERENCES ni_groups(ni_group_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.permitted_ni(
+record_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_id INT(6) UNSIGNED NOT NULL,
+UNIQUE (ni_id),
+PRIMARY KEY (record_id),
+FOREIGN KEY (ni_id) REFERENCES master.ni(ni_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.smpp_routing_properties(
+routing_rule_id INT(6) UNSIGNED NOT NULL,
+source_ton INT(6) NOT NULL,
+source_npi INT(6) NOT NULL,
+dst_ton INT(6) NOT NULL,
+dst_npi INT(6) NOT NULL,
+PRIMARY KEY (routing_rule_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.http_routing_properties(
+routing_rule_id INT(6) UNSIGNED NOT NULL,
+http_version VARCHAR(10) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (routing_rule_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.vxml_routing_properties(
+routing_rule_id INT(6) UNSIGNED NOT NULL,
+vxml_version VARCHAR(10) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (routing_rule_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.retry_plans(
+retry_plan_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_type_id INT(6) UNSIGNED NOT NULL,
+retry_period INT(6) UNSIGNED NOT NULL,
+PRIMARY KEY (retry_plan_id),
+FOREIGN KEY (ni_type_id) REFERENCES master.ni_types(ni_type_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.number_lists(
+number_list_id INT(6) UNSIGNED AUTO_INCREMENT,
+name VARCHAR(30) NOT NULL,
+description VARCHAR(50),
+number_list_type_id INT(6) UNSIGNED NOT NULL,
+file_path VARCHAR(300) NOT NULL,
+created_time TIMESTAMP NOT NULL,
+PRIMARY KEY (number_list_id),
+FOREIGN KEY (number_list_type_id) REFERENCES master.number_list_types(number_list_type_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('CREATE TABLE ',@vdb_name,'.numbers(
+number_list_id INT(6) UNSIGNED,
+number VARCHAR(20) NOT NULL,
+PRIMARY KEY (number_list_id,number),
+FOREIGN KEY (number_list_id) REFERENCES number_lists(number_list_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('INSERT INTO ',@vdb_name,'.retry_plans (ni_type_id,retry_period) values(1,60),(2,60),(3,60)');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+deallocate prepare  stmt;
+
+end if;
+select @vclient_id as client_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_client_list ()
+begin
+select client_id,client_name, description, enabled, credit from clients order by client_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_user_group_list (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select * from ', @vdb_name, '.user_groups order by user_group_id');
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_user_group (in vclient_id int, in vuser_group_name varchar(20), in vcredit int)
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vuser_group_id=-3;	/* client is disabled */
+	select @vuser_group_id as user_group_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+set @vclient_id = vclient_id;
+set @vuser_group_name = vuser_group_name;
+set @vdb_name=concat ('db',@vclient_id);
+set @sqlstring=CONCAT('select count(*) into @count from ',@vdb_name,'.user_groups where user_group_name=\'',@vuser_group_name,'\'');
+prepare stmt from @sqlstring;
+
+execute stmt;
+if (@count>0) then	/* user group already exists? */
+  set @vuser_group_id=-1;
+else
+set @vcredit = vcredit;
+select credit into @vclient_credit from clients where client_id=@vclient_id;
+if(@vclient_credit >= @vcredit) then
+	set @sqlstring=CONCAT('insert into ', @vdb_name);
+	set @sqlstring=CONCAT(@sqlstring, '.user_groups (user_group_name,credit) values(\'',@vuser_group_name,'\',',@vcredit,')');
+	prepare stmt from @sqlstring;
+
+	execute stmt;
+	select last_insert_id() into @vuser_group_id;
+	set @vnew_client_credit=@vclient_credit-@vcredit;
+	update clients set credit=@vnew_client_credit where client_id=@vclient_id;
+else
+	 set @vuser_group_id=-2;	/* insufficient credit */
+end if;
+end if;
+select @vuser_group_id as user_group_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_client (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select group_concat(distinct ni_id order by ni_id) into @permitted_ni from ', @vdb_name, '.permitted_ni');
+prepare stmt from @sqlstring;
+
+execute stmt;
+select client_name, description, enabled, credit, ifnull(@permitted_ni,0) as permitted_ni_list from clients where client_id=vclient_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_user (in vusername varchar(45), in vpassword varchar(100), in venabled boolean, in vclient_id int, in vuser_level_id int, in vuser_group_id int, in vrole_ids varchar(20))
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vuser_id=-3;	/* client is disabled */
+	select @vuser_id as user_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+select count(*) into @count from users where username=vusername;
+if (@count>0) then	/* username in use? */
+  set @vuser_id = -1;
+else
+  insert into users (username,password,enabled,client_id,user_level_id,user_group_id) values (vusername,vpassword,venabled,vclient_id,vuser_level_id,vuser_group_id);
+  select last_insert_id() into @vuser_id;
+  set @str=vrole_ids;
+  set @flag=0;	/* flag to identify first value set : */
+  set @sqlstring = 'insert into user_roles (user_id, role_id) values';
+  set @str = SUBSTRING(@str,2);	/* remove preceding colon : */
+  WHILE (CHAR_LENGTH(@str) > 0) DO
+    set @role_id=substring_index(@str,':',1);	/* first string before colon : */
+    IF (CHAR_LENGTH(@str) > CHAR_LENGTH(@role_id)) THEN	/* are there more role ids in the str? */
+	if(@flag>0) then
+          set @sqlstring = concat(@sqlstring,',(',@vuser_id,',',@role_id,')');
+	else
+	  set @sqlstring = concat(@sqlstring,'(',@vuser_id,',',@role_id,')');
+	  set @flag=1;
+	end if;
+	SET @str = REPLACE(@str,concat(@role_id, ':') , '');
+    ELSE
+	set @role_id=@str;
+        if (@flag>0) then
+          set @sqlstring = concat(@sqlstring,',(',@vuser_id,',',@role_id,')');
+	else
+	  set @sqlstring = concat(@sqlstring,'(',@vuser_id,',',@role_id,')');
+	end if;
+	SET @str = REPLACE(@str,@role_id, '');
+    END IF;
+  END WHILE;
+  prepare stmt from @sqlstring;
+
+  execute stmt;
+end if;
+select @vuser_id as user_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_client (in vclient_id int, in vdescription varchar(50), in venabled boolean, in vmodified_credit int, in vpermitted_nis varchar(100), in vdeleted_nis varchar(100))
+begin
+update clients set description=vdescription, enabled=venabled, credit=vmodified_credit where client_id=vclient_id;
+if (venabled is true) then	
+  update users set enabled=1 where client_id=vclient_id;	/* Enable all users of client */
+else
+  update users set enabled=0 where client_id=vclient_id;	/* Disable all users of client */
+end if;
+
+set @vdb_name=concat ('db',vclient_id);
+set @flag=0;	/* flag to identify first value set : */
+set @sqlstring = concat('insert ignore into ',@vdb_name,'.permitted_ni (ni_id) values');
+set @str=vpermitted_nis;
+WHILE (CHAR_LENGTH(@str) > 0) DO
+  set @permitted_ni_id=substring_index(@str,',',1);	/* first string before comma , */
+  IF (CHAR_LENGTH(@str) > CHAR_LENGTH(@permitted_ni_id)) THEN	/* are there more Ni ids in the str? */
+	if(@flag>0) then
+          set @sqlstring = concat(@sqlstring,',(',@permitted_ni_id,')');
+	else
+	  set @sqlstring = concat(@sqlstring,'(',@permitted_ni_id,')');
+	  set @flag=1;
+	end if;
+	SET @str = REPLACE(@str,concat(@permitted_ni_id, ',') , '');
+  ELSE
+	set @permitted_ni_id=@str;
+        if (@flag>0) then
+          set @sqlstring = concat(@sqlstring,',(',@permitted_ni_id,')');
+	else
+	  set @sqlstring = concat(@sqlstring,'(',@permitted_ni_id,')');
+	end if;
+	SET @str = REPLACE(@str,@permitted_ni_id, '');
+  END IF;
+END WHILE;
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring = concat('delete from ',@vdb_name,'.permitted_ni where ni_id in (',vdeleted_nis,')');
+prepare stmt from @sqlstring;
+
+execute stmt;
+
+set @sqlstring=CONCAT('select group_concat(distinct ni_id order by ni_id) into @permitted_ni from ', @vdb_name, '.permitted_ni');
+prepare stmt from @sqlstring;
+
+execute stmt;
+select description, enabled, credit, ifnull(@permitted_ni,0) as permitted_ni_list from clients where client_id=vclient_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_user_group (in vclient_id int, in vuser_group_id int, in vmodified_credit int)
+proc_label:begin
+set @vclient_id = vclient_id;
+set @vuser_group_id = vuser_group_id;
+set @vcredit = vmodified_credit;
+set @vdb_name=concat ('db',@vclient_id);
+
+select enabled into @vclient_status from clients where client_id=@vclient_id;
+if (@vclient_status=0) then
+	set @vnew_user_group_credit=-3;	/* client is disabled */
+	select credit into @vclient_credit from clients where client_id=@vclient_id;
+	select @vnew_user_group_credit as credit, @vclient_credit as client_credit;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+select credit into @vclient_credit from clients where client_id=@vclient_id;
+set @sqlstring = concat('select credit into @vuser_group_credit from ',@vdb_name,'.user_groups where user_group_id=',@vuser_group_id);
+prepare stmt from @sqlstring;
+
+execute stmt;
+if(@vcredit<@vuser_group_credit) then
+	set @sqlstring = concat('update ',@vdb_name,'.user_groups set credit=',@vcredit,' where user_group_id=',@vuser_group_id);
+	prepare stmt from @sqlstring;
+
+	execute stmt;
+	set @vnew_client_credit=@vclient_credit+@vuser_group_credit-@vcredit;
+	update clients set credit=@vnew_client_credit where client_id=@vclient_id;
+
+	set @sqlstring = concat('select credit into @vnew_user_group_credit from ',@vdb_name,'.user_groups where user_group_id=',@vuser_group_id);
+	prepare stmt from @sqlstring;
+
+	execute stmt;
+elseif (@vcredit>@vuser_group_credit) then
+	set @diff=@vcredit-@vuser_group_credit;
+	if(@vclient_credit>=@diff) then
+		set @sqlstring = concat('update ',@vdb_name,'.user_groups set credit=',@vcredit,' where user_group_id=',@vuser_group_id);
+		prepare stmt from @sqlstring;
+
+		execute stmt;
+		set @vnew_client_credit=@vclient_credit-@diff;
+		update clients set credit=@vnew_client_credit where client_id=@vclient_id;
+		
+		set @sqlstring = concat('select credit into @vnew_user_group_credit from ',@vdb_name,'.user_groups where user_group_id=',@vuser_group_id);
+		prepare stmt from @sqlstring;
+
+		execute stmt;
+	else
+		set @vnew_user_group_credit=-2;	/* insufficient credit */
+	end if;
+else
+	set @sqlstring = concat('select credit into @vnew_user_group_credit from ',@vdb_name,'.user_groups where user_group_id=',@vuser_group_id);
+	prepare stmt from @sqlstring;
+
+	execute stmt;
+end if;
+select credit into @vclient_credit from clients where client_id=@vclient_id;
+select @vnew_user_group_credit as credit, @vclient_credit as client_credit;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_user_group (in vclient_id int, in vuser_group_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select user_group_name, credit from ', @vdb_name, '.user_groups where user_group_id=',vuser_group_id);
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_user_list (in vuser_level_id int, in vclient_id int, in vuser_group_id int)
+begin
+if(vuser_level_id=1) then	/* SuperAdmin? */
+	set @sqlstring = 'select u.user_id, u.username, u.enabled, c.client_name, c.enabled as client_enabled, u.user_level_id from users u inner join clients c on u.client_id=c.client_id order by u.user_id';
+elseif (vuser_level_id=2) then	/* Admin? */
+	set @sqlstring = concat('select u.user_id, u.username, u.enabled, c.client_name, c.enabled as client_enabled, u.user_level_id from users u inner join clients c on u.client_id=c.client_id  where u.client_id=',vclient_id,' order by u.user_id');
+elseif (vuser_level_id=3) then	/* SuperUser? */
+	set @sqlstring = concat('select u.user_id, u.username, u.enabled, c.client_name, c.enabled as client_enabled, u.user_level_id from users u inner join clients c on u.client_id=c.client_id  where u.client_id=',vclient_id,' and user_group_id=',vuser_group_id,' order by u.user_id');
+else
+	set @sqlstring ='select -1 as user_id, \'\' as user_id, -1 as enabled, \'\' as client_name, -1 as client_enabled, -1 as user_level_id';
+end if;
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_user (in vuser_id int)
+begin
+select u.user_id, u.username, u.enabled, c.client_name, c.enabled as client_enabled, u.user_level_id from users u inner join clients c on u.client_id=c.client_id where u.user_id=vuser_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_user (in vuser_id int, in venabled boolean, in vcalled_user_id int)
+
+proc_label:begin
+declare vuser_level_id int;
+declare vcalled_user_level_id int;
+declare vuser_client_id int;
+declare vcalled_user_client_id int;
+declare vuser_group_id int;
+declare vcalled_user_group_id int;
+
+select client_id into vuser_client_id from users where user_id=vuser_id;
+select enabled into @vclient_status from clients where client_id=vuser_client_id;
+if (@vclient_status=0) then
+	set @vuser_id=-3;	/* client is disabled */
+	select @vuser_id as user_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+select client_id into vcalled_user_client_id from users where user_id=vcalled_user_id; 
+select user_level_id into vuser_level_id from users where user_id=vuser_id;
+select user_level_id into vcalled_user_level_id from users where user_id=vcalled_user_id;
+select user_group_id into vuser_group_id from users where user_id=vuser_id;
+select user_group_id into vcalled_user_group_id from users where user_id=vcalled_user_id;
+
+if(vcalled_user_level_id=1 and vuser_level_id=2) then	/* Called by SuperAdmin and user is Admin? */
+	update users set enabled=venabled where user_id=vuser_id;
+	set @vuser_id=vuser_id;
+elseif (vcalled_user_level_id=2 and vuser_level_id=3 and vuser_client_id=vcalled_user_client_id) then	/* Called by Admin and user is SuperUser and same client?  */
+	update users set enabled=venabled where user_id=vuser_id;
+	set @vuser_id=vuser_id;
+elseif (vcalled_user_level_id=3 and vuser_level_id=4 and vuser_client_id=vcalled_user_client_id and vuser_group_id=vcalled_user_group_id) then	/* Called by SuperUser and user is User and same client and same group? */
+	update users set enabled=venabled where user_id=vuser_id;
+	set @vuser_id=vuser_id;
+else
+	set @vuser_id=-1;	/* Unauthorized modification */
+end if;
+select @vuser_id as user_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_reset_password (in vuser_id int, in vpassword varchar(100), in vcalled_user_id int)
+
+proc_label:begin
+declare vuser_level_id int;
+declare vcalled_user_level_id int;
+declare vuser_client_id int;
+declare vcalled_user_client_id int;
+declare vuser_group_id int;
+declare vcalled_user_group_id int;
+
+select client_id into vuser_client_id from users where user_id=vuser_id;
+select enabled into @vclient_status from clients where client_id=vuser_client_id;
+if (@vclient_status=0) then
+	set @vuser_id=-3;	/* client is disabled */
+	select @vuser_id as user_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+select client_id into vcalled_user_client_id from users where user_id=vcalled_user_id; 
+select user_level_id into vuser_level_id from users where user_id=vuser_id;
+select user_level_id into vcalled_user_level_id from users where user_id=vcalled_user_id;
+select user_group_id into vuser_group_id from users where user_id=vuser_id;
+select user_group_id into vcalled_user_group_id from users where user_id=vcalled_user_id;
+
+if(vcalled_user_level_id=1 and vuser_level_id=2) then	/* Called by SuperAdmin and user is Admin? */
+	update users set password=vpassword where user_id=vuser_id;
+	set @vuser_id=vuser_id;
+elseif (vcalled_user_level_id=2 and vuser_level_id=3 and vuser_client_id=vcalled_user_client_id) then	/* Called by Admin and user is SuperUser and same client?  */
+	update users set password=vpassword where user_id=vuser_id;
+	set @vuser_id=vuser_id;
+elseif (vcalled_user_level_id=3 and vuser_level_id=4 and vuser_client_id=vcalled_user_client_id and vuser_group_id=vcalled_user_group_id) then	/* Called by SuperUser and user is User and same client and same group? */
+	update users set password=vpassword where user_id=vuser_id;
+	set @vuser_id=vuser_id;
+else
+	set @vuser_id=-1;	/* Unauthorized modification */
+end if;
+select @vuser_id as user_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_smpp_ni (in vname varchar(50), in vdescription varchar(100), in vhost varchar(50), in vport int, in vbind_mode_id int, in vconnection_type_id int, in vservice_type varchar(50), in vsystem_id varchar(50), in vpassword varchar(50), in vsource_ton int, in vsource_npi int, in vdst_ton int, in vdst_npi int, in vsessions int)
+proc_label:begin
+select count(*) into @count from ni where ni_name=vname and ni_type_id=1;
+if (@count>0) then
+	set @vni_id=-1;	/* name in use */
+	select @vni_id as ni_id;
+	LEAVE proc_label;	/* Exit */
+end if;
+
+insert into ni (ni_type_id, ni_name, connection_type_id, description) values (1, vname, vconnection_type_id, vdescription);
+select last_insert_id() into @vni_id;
+insert into smpp_accounts (ni_id,host,port,bind_mode_id,service_type,system_id,password,source_ton,source_npi,dst_ton,dst_npi,max_sessions,description) values (@vni_id,vhost,vport,vbind_mode_id,vservice_type,vsystem_id,vpassword,vsource_ton,vsource_npi,vdst_ton,vdst_npi,vsessions);
+select @vni_id as ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_smpp_ni_list ()
+begin
+select a.ni_id, n.ni_name, n.description, a.host, a.port, a.bind_mode_id, b.bind_mode, n.connection_type_id, c.connection_type, a.service_type, a.system_id, a.password, a.source_ton, a.source_npi, a.dst_ton, a.dst_npi, a.max_sessions from smpp_accounts a inner join ni n on a.ni_id=n.ni_id inner join smpp_bind_modes b on a.bind_mode_id=b.bind_mode_id inner join ni_connection_types c on n.connection_type_id=c.connection_type_id order by a.ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_smpp_ni (in vni_id int)
+begin
+select a.ni_id, n.ni_name, n.description, a.host, a.port, a.bind_mode_id, b.bind_mode, n.connection_type_id, c.connection_type, a.service_type, a.system_id, a.password, a.source_ton, a.source_npi, a.dst_ton, a.dst_npi, a.max_sessions from smpp_accounts a inner join ni n on a.ni_id=n.ni_id inner join smpp_bind_modes b on a.bind_mode_id=b.bind_mode_id inner join ni_connection_types c on n.connection_type_id=c.connection_type_id where a.ni_id=vni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_smpp_ni (in vni_id varchar(50), in vdescription varchar(100), in vhost varchar(50), in vport int, in vbind_mode_id int, in vconnection_type_id int, in vservice_type varchar(50), in vsystem_id varchar(50), in vpassword varchar(50), in vsource_ton int, in vsource_npi int, in vdst_ton int, in vdst_npi int, in vsessions int)
+begin
+update ni set description=vdescription, connection_type_id=vconnection_type_id where ni_id=vni_id;
+update smpp_accounts set host=vhost ,port=vport, bind_mode_id=vbind_mode_id, service_type=vservice_type, system_id=vsystem_id, password=vpassword, source_ton=vsource_ton, source_npi=vsource_npi, dst_ton=vdst_ton, dst_npi=vdst_npi, max_sessions=vsessions where ni_id=vni_id;
+select vni_id as ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_http_ni (in vname varchar(50), in vconnection_type_id int, in vdescription varchar(100), in vhost varchar(50), in vport int, in vhttp_ver varchar(20))
+proc_label:begin
+select count(*) into @count from ni where ni_name=vname and ni_type_id=2;
+if (@count>0) then
+	set @vni_id=-1;	/* name in use */
+	select @vni_id as ni_id;
+	LEAVE proc_label;	/* Exit */
+end if;
+
+insert into ni (ni_type_id, ni_name, connection_type_id, description) values (2, vname, vconnection_type_id, vdescription);
+select last_insert_id() into @vni_id;
+insert into http_accounts (ni_id,host,port,http_version) values (@vni_id,vhost,vport,vhttp_ver);
+select @vni_id as ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_http_ni_list ()
+begin
+select a.ni_id, n.ni_name, n.connection_type_id, c.connection_type, n.description, a.host, a.port, a.http_version from http_accounts a inner join ni n on a.ni_id=n.ni_id inner join ni_connection_types c on n.connection_type_id=c.connection_type_id order by a.ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_http_ni (in vni_id int)
+begin
+select a.ni_id, n.ni_name, n.connection_type_id, c.connection_type, n.description, a.host, a.port, a.http_version from http_accounts a inner join ni n on a.ni_id=n.ni_id inner join ni_connection_types c on n.connection_type_id=c.connection_type_id where a.ni_id=vni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_http_ni (in vni_id varchar(50), in vconnection_type_id int, in vdescription varchar(100), in vhost varchar(50), in vport int, in vhttp_ver varchar(20))
+begin
+update ni set description=vdescription, connection_type_id=vconnection_type_id where ni_id=vni_id;
+update http_accounts set host=vhost ,port=vport, http_version=vhttp_ver where ni_id=vni_id;
+select vni_id as ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_vxml_ni (in vname varchar(50), in vconnection_type_id int, in vdescription varchar(100), in vhost varchar(50), in vport int, in vvxml_ver varchar(20))
+proc_label:begin
+select count(*) into @count from ni where ni_name=vname and ni_type_id=3;
+if (@count>0) then
+	set @vni_id=-1;	/* name in use */
+	select @vni_id as ni_id;
+	LEAVE proc_label;	/* Exit */
+end if;
+
+insert into ni (ni_type_id, ni_name, connection_type_id, description) values (3, vname, vconnection_type_id, vdescription);
+select last_insert_id() into @vni_id;
+insert into vxml_accounts (ni_id,host,port,vxml_version) values (@vni_id,vhost,vport,vvxml_ver);
+select @vni_id as ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_vxml_ni_list ()
+begin
+select a.ni_id, n.ni_name, n.connection_type_id, c.connection_type, n.description, a.host, a.port, a.vxml_version from vxml_accounts a inner join ni n on a.ni_id=n.ni_id inner join ni_connection_types c on n.connection_type_id=c.connection_type_id order by a.ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_vxml_ni (in vni_id int)
+begin
+select a.ni_id, n.ni_name, n.connection_type_id, c.connection_type, n.description, a.host, a.port, a.vxml_version from vxml_accounts a inner join ni n on a.ni_id=n.ni_id inner join ni_connection_types c on n.connection_type_id=c.connection_type_id where a.ni_id=vni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_vxml_ni (in vni_id varchar(50), in vconnection_type_id int, in vdescription varchar(100), in vhost varchar(50), in vport int, in vvxml_ver varchar(20))
+begin
+update ni set description=vdescription, connection_type_id=vconnection_type_id where ni_id=vni_id;
+update vxml_accounts set host=vhost ,port=vport, vxml_version=vvxml_ver where ni_id=vni_id;
+select vni_id as ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_ni_list ()
+begin
+select n.ni_id, n.ni_name, nt.ni_type from ni n inner join ni_types nt on n.ni_type_id=nt.ni_type_id order by n.ni_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_permitted_ni_list (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select p.ni_id, n.ni_name, nt.ni_type from ', @vdb_name, '.permitted_ni p inner join master.ni n on p.ni_id=n.ni_id inner join master.ni_types nt on n.ni_type_id=nt.ni_type_id order by p.ni_id');
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_number_list (in vclient_id int, in vfile_path varchar(300), in vlist_type_id int, in vlist_name varchar(30), in vdescription varchar(30))
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vnum_list_id=-3;	/* client is disabled */
+	select @vnum_list_id as number_list_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select count(*) into @count from ',@vdb_name,'.number_lists where name=\'',vlist_name,'\' and number_list_type_id=',vlist_type_id);
+prepare stmt from @sqlstring;
+
+execute stmt;
+if (@count>0) then	/* num list already exists? */
+  set @vnum_list_id=-1;
+else
+  set @sqlstring=CONCAT('insert into ',@vdb_name,'.number_lists (name,description,number_list_type_id,file_path,created_time) values(\'',vlist_name,'\',\'', vdescription,'\',',vlist_type_id,',\'',vfile_path,'\',now())');
+  prepare stmt from @sqlstring;
+
+  execute stmt;
+  select last_insert_id() into @vnum_list_id;
+end if;
+select @vnum_list_id as number_list_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_distribution_lists (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select nl.number_list_id, nl.name, count(*) as count from ',@vdb_name,'.number_lists nl inner join ',@vdb_name,'.numbers n on nl.number_list_id=n.number_list_id where number_list_type_id<>2 group by n.number_list_id order by nl.name');	/* Type 2=Blacklists */
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_blacklists (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select number_list_id,name from ',@vdb_name,'.number_lists where number_list_type_id=2 order by number_list_id');	/* Type 2=Blacklists */
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_ni_groups (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select ni_group_id ,ni_group_name from ',@vdb_name,'.ni_groups order by ni_group_id');
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_routing (in vclient_id int, in vsource varchar(30), in vdestination varchar(30), in vkeyword varchar(30), in vni_group_id int)
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vrouting_rule_id=-3;	/* client is disabled */
+	select @vrouting_rule_id as routing_rule_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('insert into ', @vdb_name, '.routing_rules (source, destination, keyword, ni_group_id) values (\'',vsource,'\',\'',vdestination,'\',\'', vkeyword,'\',',vni_group_id,')');
+prepare stmt from @sqlstring;
+
+execute stmt;
+select last_insert_id() as routing_rule_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_routing (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select r.routing_rule_id, r.source, r.destination, r.keyword, n.ni_group_id, n.ni_group_name from ', @vdb_name, '.routing_rules r inner join ',@vdb_name,'.ni_groups n on r.ni_group_id=n.ni_group_id order by r.routing_rule_id');
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_routing_rule (in vclient_id int, in vrouting_rule_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select r.routing_rule_id, r.source, r.destination, r.keyword, n.ni_group_id, n.ni_group_name from ', @vdb_name, '.routing_rules r inner join ',@vdb_name,'.ni_groups n on r.ni_group_id=n.ni_group_id where r.routing_rule_id=',vrouting_rule_id);
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_routing (in vclient_id int, in vrouting_rule_id int, in vsource varchar(30), in vdestination varchar(30), in vkeyword varchar(30), in vni_group_id int)
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vrouting_rule_id=-3;	/* client is disabled */
+	select @vrouting_rule_id as routing_rule_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('update ', @vdb_name, '.routing_rules set source=\'',vsource,'\', destination=\'',vdestination,'\', keyword=\'', vkeyword,'\', ni_group_id=',vni_group_id,' where routing_rule_id=',vrouting_rule_id);
+prepare stmt from @sqlstring;
+
+execute stmt;
+select vrouting_rule_id as routing_rule_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_ni_group (in vclient_id int, in vname varchar(30), in vdescription varchar(50), in vni_id_list varchar(100), in vni_weight_list varchar(100))
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vni_group_id=-3;	/* client is disabled */
+	select @vni_group_id as ni_group_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select count(*) into @count from ',@vdb_name,'.ni_groups where ni_group_name=\'',vname,'\'');
+
+prepare stmt from @sqlstring;
+
+execute stmt;
+if (@count>0) then	/* group already exists? */
+  set @vni_group_id=-1;
+else
+  set @sqlstring=CONCAT('insert into ',@vdb_name,'.ni_groups (ni_group_name,description) values(\'',vname,'\',\'', vdescription,'\')');
+  prepare stmt from @sqlstring;
+
+  execute stmt;
+  select last_insert_id() into @vni_group_id;
+
+set @flag=0;	/* flag to identify first value set : */
+set @sqlstring = concat('insert into ',@vdb_name,'.ni_group_config (ni_group_id,ni_id,weight) values');
+set @str=vni_id_list;
+set @str2=vni_weight_list;
+WHILE (CHAR_LENGTH(@str) > 0) DO
+  set @vni_id=substring_index(@str,',',1);	/* first string before comma , */
+  set @vweight=substring_index(@str2,',',1);	/* first string before comma , */
+  IF (CHAR_LENGTH(@str) > CHAR_LENGTH(@vni_id)) THEN	/* are there more Ni ids in the str? */
+	if(@flag>0) then
+          set @sqlstring = concat(@sqlstring,',(',@vni_group_id,',',@vni_id,',',@vweight,')');
+	else
+	  set @sqlstring = concat(@sqlstring,'(',@vni_group_id,',',@vni_id,',',@vweight,')');
+	  set @flag=1;
+	end if;
+	SET @str = REPLACE(@str,concat(@vni_id, ',') , '');
+	SET @str2 = REPLACE(@str2,concat(@vweight, ',') , '');
+  ELSE
+	set @vni_id=@str;
+	set @vweight=@str2;
+        if (@flag>0) then
+          set @sqlstring = concat(@sqlstring,',(',@vni_group_id,',',@vni_id,',',@vweight,')');
+	else
+	  set @sqlstring = concat(@sqlstring,'(',@vni_group_id,',',@vni_id,',',@vweight,')');
+	end if;
+	SET @str = REPLACE(@str,@vni_id, '');
+	SET @str2 = REPLACE(@str2,@vweight, '');
+  END IF;
+END WHILE;
+prepare stmt from @sqlstring;
+
+execute stmt;
+end if;
+
+select @vni_group_id as ni_group_id;
+
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_retry_plans (in vclient_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select r.retry_plan_id, n.ni_type, r.retry_period from ', @vdb_name, '.retry_plans r inner join master.ni_types n on r.ni_type_id=n.ni_type_id order by r.retry_plan_id');
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_get_retry_plan (in vclient_id int, in vretry_plan_id int)
+begin
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select r.retry_plan_id, n.ni_type, r.retry_period from ', @vdb_name, '.retry_plans r inner join master.ni_types n on r.ni_type_id=n.ni_type_id where r.retry_plan_id=',vretry_plan_id);
+prepare stmt from @sqlstring;
+
+execute stmt;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_modify_retry_plan (in vclient_id int, in vretry_plan_id int, in vretry_period int)
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vretry_plan_id=-3;	/* client is disabled */
+	select @vretry_plan_id as retry_plan_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('update ', @vdb_name, '.retry_plans set retry_period=',vretry_period,' where retry_plan_id=',vretry_plan_id);
+prepare stmt from @sqlstring;
+
+execute stmt;
+select vretry_plan_id as retry_plan_id;
+end$$
+/********************************************************/
+delimiter $$
+create procedure sp_create_contact (in vclient_id int, in vcontact_name varchar(30), in vnumber varchar(20))
+proc_label:begin
+select enabled into @vclient_status from clients where client_id=vclient_id;
+if (@vclient_status=0) then
+	set @vnum_list_id=-3;	/* client is disabled */
+	select @vnum_list_id as number_list_id;
+	LEAVE proc_label;	/* Exit if client is disabled */
+end if;
+
+set @vdb_name=concat ('db',vclient_id);
+set @sqlstring=CONCAT('select count(*) into @count from ',@vdb_name,'.number_lists where name=\'',vcontact_name,'\' and number_list_type_id=3');
+prepare stmt from @sqlstring;
+
+execute stmt;
+if (@count>0) then	/* contact already exists? */
+  set @vnum_list_id=-1;
+else
+  set @sqlstring=CONCAT('insert into ',@vdb_name,'.number_lists (name,number_list_type_id,file_path,created_time) values(\'',vcontact_name,'\',3,\'UI\',now())');
+  prepare stmt from @sqlstring;
+
+  execute stmt;
+  select last_insert_id() into @vnum_list_id;
+  set @sqlstring=CONCAT('insert into ',@vdb_name,'.numbers (number_list_id,number) values(',@vnum_list_id,',\'',vnumber,'\')');
+  prepare stmt from @sqlstring;
+
+  execute stmt;
+end if;
+select @vnum_list_id as number_list_id;
+end$$
+/********************************************************/

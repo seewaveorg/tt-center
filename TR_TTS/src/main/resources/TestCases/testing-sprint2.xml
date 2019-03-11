@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Sprint 2 test cases" parallel="false">
+  <test name="Consultation">
+    <classes>
+    		 <class name="com.ngs.test.TestNGExampleTest"/> 
+      	<!-- <class name="com.ngs.test.TestPersonDaoImplTest"/>  -->
+    
+    </classes>
+  </test>
+</suite>

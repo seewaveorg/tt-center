@@ -1,0 +1,95 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+    <global-method-security pre-post-annotations="enabled" />
+    
+    <http security="none" pattern="/resource/js/**"/>
+	<http security="none" pattern="/css/**"/>
+	<http security="none" pattern="/assets/**"/>
+	<http security="none" pattern="/images/**"/>
+	<http security="none" pattern="/img/**"/>
+	<http security="none" pattern="/style/**"/>
+	<http security="none" pattern="/error/**"/>
+	<http security="none" pattern="/index*" />
+	  
+	<!-- enable use-expressions   
+	<http  use-expressions="true">   -->
+	<http auto-config="true" use-expressions="true"> 
+	 
+		<!-- access denied page -->
+		<access-denied-handler error-page="/denied.do" />
+		
+		<form-login 
+		    login-processing-url="/j_spring_security_check"
+		    login-page="/welcome.do" 
+		    default-target-url="/welcome.do"
+			authentication-failure-url="/login.do?error" 
+			username-parameter="username"
+			password-parameter="password" />
+			
+			
+		<logout logout-success-url="/login.do?logout"
+		    logout-url="/j_spring_security_logout"
+		    delete-cookies="JSESSIONID" invalidate-session="true"
+		 />
+		 
+		
+	
+  		<!-- disable csrf proetection -->
+  		<csrf disabled="true"/>
+
+		
+		<!--  <custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />    -->
+  		<session-management session-authentication-strategy-ref="sas"/>
+		 
+		
+		<logout delete-cookies="JSESSIONID" />
+		
+		
+    <headers>
+        <cache-control />
+        <content-type-options />
+        <hsts />
+        <frame-options />
+        <xss-protection />
+    </headers>
+    
+    
+	</http>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="myLoginDetailsService" >
+			<password-encoder hash="bcrypt" />    
+		</authentication-provider>
+		
+	</authentication-manager>
+
+	<!--  spring security enhancement features -->
+
+
+	<!-- <beans:bean id="sas" class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" />   -->
+	
+	<beans:bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+  <beans:constructor-arg>
+    <beans:list>
+      <beans:bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+        <beans:constructor-arg ref="sessionRegistry"/>
+        <beans:property name="maximumSessions" value="5" />
+        <beans:property name="exceptionIfMaximumExceeded" value="true" />
+      </beans:bean>
+      <beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy">
+      </beans:bean>
+      <beans:bean class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+        <beans:constructor-arg ref="sessionRegistry"/>
+      </beans:bean>
+    </beans:list>
+  </beans:constructor-arg>
+</beans:bean>
+
+	<beans:bean id="sessionRegistry"  class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+</beans:beans>

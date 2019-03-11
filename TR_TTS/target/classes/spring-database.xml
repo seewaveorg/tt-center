@@ -1,0 +1,159 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/ttsystem" />
+		<property name="username" value="ttsystemdeamonLo" />
+		<property name="password" value="111DeamonPass" />
+		<property name="maxWait" value="10000" />
+		<property name="timeBetweenEvictionRunsMillis" value="5000" />
+		<property name="minEvictableIdleTimeMillis" value="60000" />
+		<property name="removeAbandoned" value="true" />
+		<property name="initialSize" value="5" />
+		<property name="maxIdle" value="10" />
+		<property name="maxActive" value="20" />
+	</bean>
+
+
+	<tx:annotation-driven />
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate4.annotation.AnnotationSessionFactoryBean"> -->
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.ngs.model" />
+		<property name="mappingResources">
+
+			<list>
+				<value>ObjectRelationalMapping/Activities.hbm.xml</value>
+				<value>ObjectRelationalMapping/Alarm.hbm.xml</value>
+				<value>ObjectRelationalMapping/Alarmname.hbm.xml</value>
+				<value>ObjectRelationalMapping/Alerts.hbm.xml</value>
+				<value>ObjectRelationalMapping/Category.hbm.xml</value>
+				<value>ObjectRelationalMapping/Company.hbm.xml</value>
+				<value>ObjectRelationalMapping/Department.hbm.xml</value>
+				<value>ObjectRelationalMapping/Heartbeat.hbm.xml</value>
+				<value>ObjectRelationalMapping/LessonLearnt.hbm.xml</value>
+				<value>ObjectRelationalMapping/Log.hbm.xml</value>
+				<value>ObjectRelationalMapping/Login.hbm.xml</value>
+				<value>ObjectRelationalMapping/Parameters.hbm.xml</value>
+				<value>ObjectRelationalMapping/Periodic.hbm.xml</value>
+				<value>ObjectRelationalMapping/PersonType.hbm.xml</value>
+				<value>ObjectRelationalMapping/Request.hbm.xml</value>
+				<value>ObjectRelationalMapping/RollHasActivities.hbm.xml</value>
+				<value>ObjectRelationalMapping/Rolls.hbm.xml</value>
+				<value>ObjectRelationalMapping/Systems.hbm.xml</value>
+				<value>ObjectRelationalMapping/SystemsHasParameters.hbm.xml</value>
+				<value>ObjectRelationalMapping/SystemsHasUser.hbm.xml</value>
+				<value>ObjectRelationalMapping/Tt.hbm.xml</value>
+				<value>ObjectRelationalMapping/TtUpdate.hbm.xml</value>
+				<value>ObjectRelationalMapping/Types.hbm.xml</value>
+				<value>ObjectRelationalMapping/User.hbm.xml</value>
+				<value>ObjectRelationalMapping/UserHasDepartment.hbm.xml</value>
+			</list>
+
+		</property>
+
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.connection.pool_size">20</prop>
+				<prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+				<prop key="hibernate.connection.charSet">UTF-8</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>
+				<prop key="hibernate.auto_close_session">true</prop>
+
+				<!-- this was added to avoid cilib error. but no any impact -->
+
+				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+
+				<prop key="hibernate.c3p0.acquire_increment">1</prop>
+				<prop key="hibernate.c3p0.idle_test_period">100</prop>
+				<prop key="hibernate.c3p0.max_size">20</prop>
+				<prop key="maxIdleTime">10</prop>
+				<prop key="hibernate.c3p0.max_statements">100</prop>
+				<prop key="hibernate.c3p0.min_size">5</prop>
+				<prop key="hibernate.c3p0.timeout">10</prop>
+
+			</props>
+		</property>
+
+	</bean>
+
+	<bean id="dBService" class="com.ngs.service.DbService">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="loginDao" class="com.ngs.dao.implementation.LoginDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="rollDao" class="com.ngs.dao.implementation.RollsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="activitiesDao" class="com.ngs.dao.implementation.ActivitiesDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+
+	<!-- TT System Related been -->
+	<bean id="" class="com.ngs.dao.implementation.TtSystemDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="" class="com.ngs.dao.implementation.UserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- Spring security related classes -->
+
+	<bean id="myLoginDetailsService" class="com.ngs.service.MyLoginDetailsService">
+		<property name="loginDao" ref="loginDao" />
+		<property name="activitiesDao" ref="activitiesDao" />
+	</bean>
+	<bean id="fileValidator" class="com.ngs.util.FileValidator" />
+
+	<bean id="filterMultipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000000" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="userServicePointCut"
+			expression="execution(* com.ngs.service.*Service.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="userServicePointCut" />
+
+	</aop:config>
+
+
+
+</beans>

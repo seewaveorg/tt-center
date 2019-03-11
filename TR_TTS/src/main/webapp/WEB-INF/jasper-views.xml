@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+  http://www.springframework.org/schema/beans 
+  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+  http://www.springframework.org/schema/util 
+  http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+ 
+     <!--here all the url value should contains the valid path for the jrxml file-->
+     
+    
+    <bean id="pdfReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:JasperReports/opdchit.jrxml"
+          p:reportDataKey="datasource" />
+          
+   <bean id="htmlOpdChit"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+          p:url="classpath:JasperReports/opd.jrxml"
+          p:reportDataKey="datasource" />
+    
+
+          
+          
+   <bean id="DoctorsDailyReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+          p:url="classpath:JasperReports/dailyConsultation.jrxml"
+          p:reportDataKey="datasource" /> 
+          
+
+   <bean id="PharmacistDailyReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+          p:url="classpath:JasperReports/pharmasistDailyReport.jrxml"
+          p:reportDataKey="datasource" /> 
+          
+     <bean id="daily_drugsvise_issue"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+          p:url="classpath:JasperReports/drugs_issue.jrxml"
+          p:reportDataKey="datasource" />       
+          
+          
+   <!-- 
+   
+     <bean id="DailyReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:JasperReports/dailyReports.jrxml"
+          p:reportDataKey="datasource" />   
+             
+
+          
+          
+   //bellow first part did nto worked properly
+      <bean id="DoctorsDailyReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:JasperReports/docdailyreport.jrxml"
+          p:reportDataKey="datasource"  >
+          
+           <property name="headers">
+	        <props>
+	            <prop key="Content-Disposition">
+	                 attachment; filename=pdffilename.pdf
+	            </prop>
+	        </props>
+  			</property>
+  
+  </bean>
+ 
+    <bean id="xlsReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView"
+          p:url="classpath:JasperReports/opdchit.jrxml"
+          p:reportDataKey="datasource" />
+ 
+ 
+    <bean id="htmlReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsHtmlView"
+          p:url="classpath:JasperReports/opdchit.jrxml"
+          p:reportDataKey="datasource" />
+ 
+ 
+    <bean id="csvReport"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsCsvView"
+          p:url="classpath:JasperReports/opdchit.jrxml"
+          p:reportDataKey="datasource"/>
+          
+    -->      
+          <!--  My modifications  
+   
+    <bean id="printChitPdf"
+          class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+          p:url="classpath:JasperReports/opdchit.jrxml"
+          p:reportDataKey="datasource" />  -->
+ 
+</beans>

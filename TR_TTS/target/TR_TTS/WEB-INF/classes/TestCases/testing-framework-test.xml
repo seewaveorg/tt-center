@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="TestNgMavenAutomatedTestStart" parallel="false">
+  <test name="TestNgMavenTest">
+    <classes>
+    	<class name="com.ngs.test.TestNGExampleTest"/>
+      
+    </classes>
+  </test>
+</suite>

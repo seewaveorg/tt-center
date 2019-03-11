@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-03-04T01:32:41 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="drugs_issue" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ced95029-b569-4027-895c-af2843a4e088">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="drug" class="java.lang.String"/>
+	<field name="patient" class="java.lang.String"/>
+	<field name="regno" class="java.lang.String"/>
+	<field name="total" class="java.lang.Double"/>
+	<field name="pharmacist" class="java.lang.String"/>
+	<field name="stock" class="java.lang.String"/>
+	<field name="day" class="java.lang.String"/>
+	<field name="subtotal" class="java.lang.Double"/>
+	<variable name="total1" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{total}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+		<groupHeader>
+			<band height="37">
+				<textField>
+					<reportElement x="0" y="5" width="330" height="30" uuid="aeb59491-1bd3-45ad-b351-9eccd21b9b14"/>
+					<textFieldExpression><![CDATA[$F{drug}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="380" y="5" width="160" height="25" uuid="335b07e5-8c1d-455c-90ae-4dc5f4a748db"/>
+					<textFieldExpression><![CDATA[$F{day}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="34">
+				<textField>
+					<reportElement x="430" y="0" width="100" height="30" uuid="5721a3eb-aac8-45e3-b912-e23abe4043ab"/>
+					<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+		<groupHeader>
+			<band height="76">
+				<staticText>
+					<reportElement x="0" y="0" width="150" height="20" uuid="138d27fa-bb4b-4fce-a42c-ca15a899b4e1"/>
+					<text><![CDATA[Patient]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="150" y="0" width="130" height="20" uuid="31477655-2f7c-48f5-91ae-5ff0ae4050e6"/>
+					<text><![CDATA[Patient Reg No]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="280" y="0" width="100" height="20" uuid="dc91bfa4-c676-447e-94d3-049eec8d0ad5"/>
+					<text><![CDATA[Pharmacist]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="460" y="30" width="92" height="30" uuid="28851b30-5532-47a4-891e-4eb0244d39ad"/>
+					<textFieldExpression><![CDATA[$F{stock}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="457" y="0" width="98" height="20" uuid="d39d9b32-79da-436e-ba7d-3312211ad0d5"/>
+					<text><![CDATA[Stock owner]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="-1" y="30" width="151" height="30" uuid="b7986031-e36e-4a31-9d83-d657354ee950"/>
+					<textFieldExpression><![CDATA[$F{patient}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="150" y="30" width="130" height="30" uuid="63d45372-746e-4e99-b469-269a3c42418b"/>
+					<textFieldExpression><![CDATA[$F{regno}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="280" y="30" width="100" height="30" uuid="356ea782-1a48-415f-8f56-0a4e978f1f9c"/>
+					<textFieldExpression><![CDATA[$F{pharmacist}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="379" y="3" width="76" height="15" uuid="a76d0708-9f19-473c-afde-59837d9eff41"/>
+					<text><![CDATA[quantity]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="380" y="28" width="100" height="30" uuid="7341fd33-33b5-4597-bcfa-307134839845"/>
+					<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="136" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="47" y="0" width="465" height="62" uuid="1a652692-054a-40f3-ade5-68d8da36626d"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Daily Drugs Delevery Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="110" y="62" width="305" height="22" uuid="88d4231e-f014-4b0d-b871-1737ba63a1ae"/>
+				<textElement>
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<text><![CDATA[Kanthale Base Hospital Dispansary]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="46" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="1a61a836-d137-48b1-ad67-6ff64600bf93"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="fa45a887-615a-4d84-a2d7-8a2219671b3c"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="-21" y="1" width="597" height="24" forecolor="#D0B48E" backcolor="#F2EBDF" uuid="183682bc-d976-4756-83e0-6625a3f98ed1"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="533" y="0" width="40" height="20" forecolor="#736343" uuid="0193f9b3-1559-491a-8580-b6988863b6a1"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="453" y="0" width="80" height="20" forecolor="#736343" uuid="d00b105e-494b-418b-8ac9-8b1b4824f4f0"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="22" y="1" width="197" height="20" forecolor="#736343" uuid="0616f3fe-0354-456f-8911-ec30ec51a5ae"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

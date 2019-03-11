@@ -1,0 +1,106 @@
+CREATE DATABASE db1;
+USE db1;
+
+CREATE TABLE user_groups(
+user_group_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+user_group_name VARCHAR(15) NOT NULL,
+credit INT(10) UNSIGNED DEFAULT 0,
+PRIMARY KEY (user_group_id)
+);
+
+CREATE TABLE masks(
+mask_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+mask VARCHAR(20) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (mask_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE mask_config(
+record_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+mask_id INT(6) UNSIGNED NOT NULL,
+user_group_id INT(6) UNSIGNED NOT NULL,
+PRIMARY KEY (record_id),
+FOREIGN KEY (mask_id) REFERENCES masks(mask_id),
+FOREIGN KEY (user_group_id) REFERENCES user_groups(user_group_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE ni_groups(
+ni_group_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+ni_group_name VARCHAR(15) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (ni_group_id)
+);
+
+CREATE TABLE ni_group_config(
+ni_group_id INT(6) UNSIGNED NOT NULL,
+ni_id INT(6) UNSIGNED NOT NULL,
+weight INT(6) UNSIGNED NOT NULL,
+FOREIGN KEY (ni_group_id) REFERENCES ni_groups(ni_group_id),
+FOREIGN KEY (ni_id) REFERENCES master.ni(ni_id)
+);
+
+CREATE TABLE routing_rules(
+routing_rule_id INT(6) UNSIGNED AUTO_INCREMENT,
+source VARCHAR(30) NOT NULL,
+destination VARCHAR(30) NOT NULL,
+keyword VARCHAR(50) NOT NULL,
+ni_group_id INT(6) UNSIGNED NOT NULL,
+PRIMARY KEY (routing_rule_id),
+FOREIGN KEY (ni_group_id) REFERENCES ni_groups(ni_group_id)
+);
+
+CREATE TABLE permitted_ni(
+record_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_id INT(6) UNSIGNED NOT NULL,
+PRIMARY KEY (record_id),
+FOREIGN KEY (ni_id) REFERENCES master.ni(ni_id)
+);
+
+CREATE TABLE smpp_routing_properties(
+routing_rule_id INT(6) UNSIGNED NOT NULL,
+source_ton INT(6) NOT NULL,
+source_npi INT(6) NOT NULL,
+dst_ton INT(6) NOT NULL,
+dst_npi INT(6) NOT NULL,
+PRIMARY KEY (routing_rule_id)
+);
+
+CREATE TABLE http_routing_properties(
+routing_rule_id INT(6) UNSIGNED NOT NULL,
+http_version VARCHAR(10) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (routing_rule_id)
+);
+
+CREATE TABLE vxml_routing_properties(
+routing_rule_id INT(6) UNSIGNED NOT NULL,
+vxml_version VARCHAR(10) NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (routing_rule_id)
+);
+
+CREATE TABLE retry_plans(
+retry_plan_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_type_id INT(6) UNSIGNED NOT NULL,
+retry_period INT(6) UNSIGNED NOT NULL,
+PRIMARY KEY (retry_plan_id),
+FOREIGN KEY (ni_type_id) REFERENCES master.ni_types(ni_type_id)
+);
+
+CREATE TABLE number_lists(
+number_list_id INT(6) UNSIGNED AUTO_INCREMENT,
+name VARCHAR(30) NOT NULL,
+description VARCHAR(50),
+number_list_type_id INT(6) UNSIGNED NOT NULL,
+file_path VARCHAR(300) NOT NULL,
+created_time TIMESTAMP NOT NULL,
+PRIMARY KEY (number_list_id),
+FOREIGN KEY (number_list_type_id) REFERENCES master.number_list_types(number_list_type_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE numbers(
+number_list_id INT(6) UNSIGNED,
+number VARCHAR(20) NOT NULL,
+PRIMARY KEY (number_list_id,number),
+FOREIGN KEY (number_list_id) REFERENCES number_lists(number_list_id)
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;

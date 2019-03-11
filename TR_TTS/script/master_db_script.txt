@@ -1,0 +1,212 @@
+CREATE DATABASE master DEFAULT CHARACTER SET=utf8;
+USE master;
+
+CREATE  TABLE user_levels (
+user_level_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+user_level VARCHAR(45) NOT NULL,
+PRIMARY KEY (user_level_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE  TABLE users (
+user_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+username VARCHAR(45) NOT NULL,
+password VARCHAR(100) NOT NULL,
+enabled TINYINT NOT NULL DEFAULT 1,
+client_id INT(11) UNSIGNED NOT NULL,
+user_level_id INT(11) UNSIGNED NOT NULL,
+user_group_id INT(11) UNSIGNED NOT NULL,
+PRIMARY KEY (user_id, username),
+FOREIGN KEY (user_level_id) REFERENCES user_levels (user_level_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE clients(
+client_id INT(6) UNSIGNED AUTO_INCREMENT,
+client_name VARCHAR(30) NOT NULL,
+description VARCHAR(50),
+enabled TINYINT NOT NULL DEFAULT 1,
+created_user_id INT(10) UNSIGNED NOT NULL,
+created_time TIMESTAMP NOT NULL,
+credit INT(10) UNSIGNED DEFAULT 0,
+credit_threshold INT(10) UNSIGNED DEFAULT 0,
+PRIMARY KEY(client_id),
+FOREIGN KEY (created_user_id) REFERENCES users(user_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE  TABLE roles(
+role_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+role_name VARCHAR(45) NOT NULL,
+PRIMARY KEY (role_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE user_roles (
+user_role_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+user_id INT(11) UNSIGNED NOT NULL,
+role_id INT(11) UNSIGNED NOT NULL,
+PRIMARY KEY (user_role_id),
+FOREIGN KEY (user_id) REFERENCES users (user_id),
+FOREIGN KEY (role_id) REFERENCES roles (role_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE ni_types(
+ni_type_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_type VARCHAR(15) NOT NULL,
+PRIMARY KEY(ni_type_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE ni_connection_types(
+connection_type_id INT(6) UNSIGNED AUTO_INCREMENT,
+connection_type VARCHAR(15) NOT NULL,
+PRIMARY KEY(connection_type_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE ni(
+ni_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_type_id INT(6) UNSIGNED NOT NULL,
+ni_name VARCHAR(30) NOT NULL,
+connection_type_id INT(6) UNSIGNED NOT NULL,
+ni_status_id INT(6) UNSIGNED NOT NULL,
+description VARCHAR(50),
+PRIMARY KEY (ni_id),
+FOREIGN KEY (ni_type_id) REFERENCES ni_types(ni_type_id),
+FOREIGN KEY (connection_type_id) REFERENCES ni_connection_types(connection_type_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE smpp_bind_modes(
+bind_mode_id INT(6) UNSIGNED AUTO_INCREMENT,
+bind_mode VARCHAR(20) NOT NULL,
+PRIMARY KEY(bind_mode_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE smpp_accounts(
+smpp_acc_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_id INT(6) UNSIGNED NOT NULL,
+host VARCHAR(20) NOT NULL,
+port INT(6) UNSIGNED NOT NULL,
+bind_mode_id INT(6) UNSIGNED NOT NULL DEFAULT 3,
+service_type VARCHAR(20) NOT NULL,
+system_id VARCHAR(20) NOT NULL,
+password VARCHAR(20) NOT NULL,
+source_ton INT(6) DEFAULT 0,
+source_npi INT(6) DEFAULT 0,
+dst_ton INT(6) DEFAULT 0,
+dst_npi INT(6) DEFAULT 0,
+max_sessions INT(6) UNSIGNED DEFAULT 1,
+PRIMARY KEY(smpp_acc_id),
+FOREIGN KEY (ni_id) REFERENCES ni(ni_id),
+FOREIGN KEY (bind_mode_id) REFERENCES smpp_bind_modes(bind_mode_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE http_accounts(
+http_acc_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_id INT(6) UNSIGNED NOT NULL,
+host VARCHAR(20) NOT NULL,
+port INT(6) NOT NULL,
+http_version VARCHAR(20) NOT NULL,
+PRIMARY KEY (http_acc_id),
+FOREIGN KEY (ni_id) REFERENCES ni(ni_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE vxml_accounts(
+vxml_acc_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_id INT(6) UNSIGNED NOT NULL,
+host VARCHAR(20) NOT NULL,
+port INT(6) NOT NULL,
+vxml_version VARCHAR(20) NOT NULL,
+PRIMARY KEY (vxml_acc_id),
+FOREIGN KEY (ni_id) REFERENCES ni(ni_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE requests(
+request_id INT(12) UNSIGNED AUTO_INCREMENT,
+ni_id INT(6) UNSIGNED NOT NULL,
+client_id INT(6) UNSIGNED NOT NULL,
+user_id INT(6) UNSIGNED NOT NULL,
+entry_time TIMESTAMP NOT NULL,
+scheduled_time TIMESTAMP NOT NULL,
+source VARCHAR(30) NOT NULL,
+destination VARCHAR(30) NOT NULL,
+content VARCHAR(500) NOT NULL,
+priority_id INT(6),
+distribution_list_id INT(6) UNSIGNED,
+blacklist_id INT(6) UNSIGNED,
+PRIMARY KEY (request_id),
+FOREIGN KEY (ni_id) REFERENCES ni(ni_id),
+FOREIGN KEY (client_id) REFERENCES clients(client_id),
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE queue(
+message_ref VARCHAR(30) NOT NULL,
+request_id INT(6) UNSIGNED NOT NULL,
+source VARCHAR(30) NOT NULL,
+destination VARCHAR(30) NOT NULL,
+content VARCHAR(500) NOT NULL,
+priority_id INT(6),
+last_output_ni_group_id INT(6) UNSIGNED,
+next_retry_time TIMESTAMP NOT NULL,
+PRIMARY KEY (message_ref),
+FOREIGN KEY (request_id) REFERENCES requests(request_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE message_statuses(
+message_status_id INT(6) UNSIGNED AUTO_INCREMENT,
+message_status VARCHAR(20) NOT NULL,
+PRIMARY KEY(message_status_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE record_types(
+record_type_id INT(6) UNSIGNED AUTO_INCREMENT,
+record_type VARCHAR(20) NOT NULL,
+PRIMARY KEY(record_type_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE message_history(
+record_id BIGINT(20) UNSIGNED AUTO_INCREMENT,
+record_type_id INT(6) UNSIGNED NOT NULL,
+message_ref VARCHAR(30) NOT NULL,
+request_id INT(6) UNSIGNED NOT NULL,
+source VARCHAR(30) NOT NULL,
+destination VARCHAR(30) NOT NULL,
+content VARCHAR(500) NOT NULL,
+priority_id INT(6),
+output_ni_group_id INT(6) UNSIGNED NOT NULL,
+output_ni_id INT(6) UNSIGNED NOT NULL,
+message_status_id INT(6) UNSIGNED NOT NULL,
+time TIMESTAMP NOT NULL,
+info VARCHAR(500),
+PRIMARY KEY (record_id),
+FOREIGN KEY (record_type_id) REFERENCES record_types(record_type_id),
+FOREIGN KEY (request_id) REFERENCES requests(request_id),
+FOREIGN KEY (output_ni_id) REFERENCES ni(ni_id),
+FOREIGN KEY (message_status_id) REFERENCES message_statuses(message_status_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE ni_statuses(
+ni_status_id INT(6) UNSIGNED AUTO_INCREMENT,
+ni_status VARCHAR(20) NOT NULL,
+PRIMARY KEY(ni_status_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE ni_status_changes(
+record_id BIGINT(20) UNSIGNED AUTO_INCREMENT,
+ni_id INT(6) UNSIGNED NOT NULL,
+ni_status_id INT(6) UNSIGNED NOT NULL,
+event_time TIMESTAMP NOT NULL,
+comment VARCHAR(100),
+PRIMARY KEY(record_id),
+FOREIGN KEY (ni_id) REFERENCES ni(ni_id),
+FOREIGN KEY (ni_status_id) REFERENCES ni_statuses(ni_status_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE number_list_types(
+number_list_type_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+number_list_type VARCHAR(30) NOT NULL,
+PRIMARY KEY (number_list_type_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+
+CREATE TABLE priorities(
+priority_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+priority VARCHAR(20) NOT NULL,
+PRIMARY KEY (priority_id)
+) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
+

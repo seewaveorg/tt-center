@@ -1,0 +1,91 @@
+#mydiv {
+  
+  
+	/* height: 175px;
+	width: 300px;  */
+	}
+
+
+#searchDiv{
+    border-radius: 25px;
+    border: 2px solid #8AC007;
+    padding: 20px;
+	height: 300px;
+	width: 400px;
+
+}
+
+/**
+        #container1 {
+  height: 0px;
+  width: 0px;
+  position: relative;
+}
+<div id="mydiv" name="mydiv" >  
+
+ <div class="printable">
+ 
+ 
+#image {
+  position: absolute;   left: 0;  top: 0;
+}
+#text {
+  z-index: 100; position: absolute; color: black; font-size: 13px; font-weight: bold; left: 75px; top: 98px;
+}
+#text1{
+  z-index: 100; position: absolute; color: black; font-size: 10px; font-weight: bold; left: 75px; top: 117px;
+}
+ #text2{
+  z-index: 100; position: absolute; color: black; font-size: 10px; font-weight: bold; left: 75px; top: 131px;
+}
+#text3{
+  z-index: 100;  position: absolute;  color: black;  font-size: 15px;  font-weight: bold;  left: 100px;  top: 140px;
+}
+#text4{
+  z-index: 100;  position: absolute;  color: black;  font-size: 10px;  font-weight: bold;  left: 250px;  top: 72px;
+}
+#text5{
+  z-index: 100;  position: absolute;  color: black;  font-size: 10px;  font-weight: bold;  left: 250px;  top: 86px;
+}
+
+
+
+
+
+	body {
+    height: 1011px;
+		height: 638px;
+    margin: 0;
+    padding: 0;
+    background-color: #FFCC00;
+}	
+
+**/
+ #container1 {
+  height: 1011px; width: 638px; position: relative;
+}
+#image {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#text {
+ z-index: 100;  position: absolute;  color: black;  font-size: 30px;  font-weight: bold;  left: 260px;top: 365px; 
+}
+#text1{
+  z-index: 100;  position: absolute; color: black; font-size: 30px; font-weight: bold; left: 260px; top: 412px;
+}
+ #text2{
+  z-index: 100;  position: absolute;  color: black;  font-size: 30px;  font-weight: bold;  left: 260px;  top: 460px;
+}
+#text3{
+  z-index: 100;  position: absolute;  color: black;  font-size: 30px;  font-weight: bold;  left: 520px;  top: 520px;
+}
+#text4{
+  z-index: 100;  position: absolute;  color: black;  font-size: 30px;  font-weight: bold;  left: 820px;  top: 265px;
+}
+#text5{
+  z-index: 100;  position: absolute;  color: black;  font-size: 30px;  font-weight: bold;  left: 820px;  top: 306px;
+}
+
+

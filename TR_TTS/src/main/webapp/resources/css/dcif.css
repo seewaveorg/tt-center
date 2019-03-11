@@ -1,0 +1,380 @@
+
+
+
+<!-- My additionsss  to get a horizontally arranged list  -->
+/**
+ul {
+    background: #48D;
+    height: 35px;
+    line-height: 25px;
+    width: 300px;
+}
+li {
+    float: left;
+    list-style-type: none;
+    margin: 5px 0 0 5px;
+}
+li div {
+ 
+    padding: 0 5px;
+}
+
+**/
+
+
+
+.lu {
+    background: #48D;
+    height: 35px;
+    line-height: 25px;
+    width: 300px;
+}
+.il {
+	
+    float: left;
+    list-style-type: none;
+    margin: 5px 0 0 5px;
+}
+.il div {
+ 
+    padding: 0 5px;
+}
+
+.window-t{
+        border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    /*
+    padding: 5px; 
+	display:table-cell;
+    /*width: 360px; 
+    width :470px;
+    height: 350px;
+	float: left;
+	
+	position: relative;
+	*/
+	
+	float: left;
+    margin: 5px;
+    padding: 15px;
+    width: 450px;
+    height: 300px;
+    border: 1px solid black;
+}
+
+
+.window-t-1{
+        border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 5px;
+	display:table-cell;
+    width: 180px;
+    height: 390px;
+	position: relative;
+}
+
+.window-t-2{
+        border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 2px; 
+	display:table-cell;
+    width: 350px;
+    height: 390px;
+	float: left;
+	
+	position: relative;
+}
+
+.window-t-0{
+        border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 10px; 
+	display:table-cell;
+    width: 410px;
+    height: 230px;
+	float: left;
+	
+	position: relative;
+}
+
+.window-t-3{
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 20px;
+	display:table-cell;
+    width: 300px;
+    height: 270px;
+	position: relative;
+}
+
+.window-t-4{
+    
+      border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 20px;
+	display:table-cell;
+    width: 630px;
+    height: 290px;
+	float: left;
+	position: relative;
+	
+}
+
+.window-t-5{
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 5px;
+	display:table-cell;
+    width: 330px;
+    height: 580px;
+	position: relative;
+}
+
+.window-t-6{
+    
+      border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 5px;
+	display:table-cell;
+    width: 600px;
+    height: 630px;
+	float: left;
+	position: relative;
+	
+}
+
+.window-t-7{
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 5px;
+	display:table-cell;
+    width: 1000px;
+    height: 270px;
+	position: relative;
+}
+
+.window-t-8{
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    padding: 5px;
+	display:table-cell;
+    width: 1000px;
+    
+	position: relative;
+}
+
+.butn{
+	right: 10px;
+	bottom: 3px;
+    width: 50px;
+    height: 25px;
+	position: absolute;
+	border-radius: 25px;
+    border: 1px solid #8AC007;
+}
+
+.topbutn{
+	right: 30px;
+	top: 15px;
+    width: 100px;
+    height: 35px;
+	position: absolute;
+	border-radius: 25px;
+    border: 1px solid #8AC007;
+}
+
+
+.butn2{
+	right: 120px;
+	bottom: 3px;
+    width: 50px;
+    height: 25px;
+	position: absolute;
+	border-radius: 25px;
+    border: 1px solid #8AC007;
+}
+
+	/**
+#deceiseTable{
+	left: 10px;
+	top: 60px;
+
+    width:95%;
+    
+    height: 200px;
+	position: absolute;
+	border-radius: 25px;
+    border: 1px solid #8AC007;
+ 
+}
+   **/
+   
+.control{
+height: 30px;
+	border-radius: 5px;
+    display: block;
+text-align: center;
+}
+
+.select{
+	left: 10px;
+	top: 15px;
+    width: 170px;
+    height: 550px;
+	position: absolute;
+	margin-top:10px;
+	      border: 1px solid #8AC007;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+/** 	border-radius: 25px;
+   border: 1px solid #8AC007; **/
+}
+
+ .serviceCategorySelect{
+	
+	left: 10px;
+	top: 15px;
+    width: 390px;
+    height: 550px;
+	position: absolute;
+	margin-top:10px;
+	      border: 1px solid #8AC007;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  /**border-radius: 25px;  **/
+   border: 1px solid #8AC007;
+	
+}
+
+.serviceSelect{
+	
+	left: 10px;
+	top: 15px;
+    width: 390px;
+    height: 550px;
+	position: absolute;
+	margin-top:10px;
+	      border: 1px solid #8AC007;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  /**border-radius: 25px;  **/
+   border: 1px solid #8AC007;
+	
+}
+
+.select-sym{
+	left: 10px;
+	top: 15px;
+    width: 340px;
+    height: 550px;
+	position: absolute;
+	margin-top:10px;
+	      border: 1px solid #8AC007;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+/** 	border-radius: 25px;
+   border: 1px solid #8AC007; **/
+}
+
+.select-left{
+	left: 420px;
+	top: 15px;
+    width: 170px;
+    height: 30px;
+	position: absolute;
+	margin-top:10px;
+	      border: 1px solid #8AC007;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+/** 	border-radius: 25px;
+   border: 1px solid #8AC007; **/
+}
+
+
+.textboxes {
+	left: 10px;
+	top: 15px;
+    width: 170px;
+    height: 20px;
+	position: absolute;
+	margin-top:10px;
+	      border: 1px solid #8AC007;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+       -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,.05);
+/** 	border-radius: 25px;
+   border: 1px solid #8AC007; **/
+}
