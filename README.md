@@ -1,2 +1,2 @@
 # tt-center
-Trouble Tickets and Alert Mangement
+Centralized Trouble Tickets and Alert Mangement system for kubernetes based systems.
