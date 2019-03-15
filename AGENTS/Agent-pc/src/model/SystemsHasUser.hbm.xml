@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 29, 2017 2:09:58 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.SystemsHasUser" table="systems_has_user" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="systems" class="model.Systems" fetch="select">
+            <column name="systems" not-null="true" />
+        </many-to-one>
+        <many-to-one name="user" class="model.User" fetch="select">
+            <column name="user" not-null="true" />
+        </many-to-one>
+        <property name="sms" type="string">
+            <column name="sms" length="45" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="45" />
+        </property>
+    </class>
+</hibernate-mapping>

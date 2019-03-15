@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 29, 2017 2:09:58 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.RollHasActivities" table="roll_has_activities" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="activities" class="model.Activities" fetch="select">
+            <column name="activities_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="rolls" class="model.Rolls" fetch="select">
+            <column name="rolls_id" not-null="true" />
+        </many-to-one>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+    </class>
+</hibernate-mapping>

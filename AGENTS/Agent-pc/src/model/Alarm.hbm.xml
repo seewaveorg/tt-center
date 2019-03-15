@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 29, 2017 2:09:58 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.Alarm" table="alarm" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="alarmname" class="model.Alarmname" fetch="select">
+            <column name="alarmname" />
+        </many-to-one>
+        <many-to-one name="systems" class="model.Systems" fetch="select">
+            <column name="system" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tt" class="model.Tt" fetch="select">
+            <column name="tt" />
+        </many-to-one>
+        <many-to-one name="types" class="model.Types" fetch="select">
+            <column name="types" not-null="true" />
+        </many-to-one>
+        <property name="alarm" type="string">
+            <column name="alarm" length="100" not-null="true" />
+        </property>
+        <property name="regtime" type="timestamp">
+            <column name="regtime" length="19" not-null="true" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <property name="severity" type="java.lang.Integer">
+            <column name="severity" />
+        </property>
+        <property name="details" type="string">
+            <column name="details" length="100" />
+        </property>
+        <property name="originatetime" type="timestamp">
+            <column name="originatetime" length="19" />
+        </property>
+        <property name="cleartime" type="timestamp">
+            <column name="cleartime" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

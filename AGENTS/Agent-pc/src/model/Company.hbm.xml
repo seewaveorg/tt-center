@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 29, 2017 2:09:58 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.Company" table="company" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="name" />
+        </property>
+        <property name="addressLine1" type="string">
+            <column name="`address_line 1`" />
+        </property>
+        <property name="addressLine2" type="string">
+            <column name="`address_line 2`" not-null="true" />
+        </property>
+        <property name="addressLine3" type="string">
+            <column name="`address_line 3`" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="100" not-null="true" />
+        </property>
+        <property name="telephone" type="string">
+            <column name="telephone" length="20" not-null="true" />
+        </property>
+        <property name="fax" type="string">
+            <column name="fax" length="20" not-null="true" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <set name="systemses" table="systems" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="company" not-null="true" />
+            </key>
+            <one-to-many class="model.Systems" />
+        </set>
+        <set name="tts" table="tt" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="company" />
+            </key>
+            <one-to-many class="model.Tt" />
+        </set>
+        <set name="departments" table="department" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="company" not-null="true" />
+            </key>
+            <one-to-many class="model.Department" />
+        </set>
+        <set name="users" table="user" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="company" not-null="true" />
+            </key>
+            <one-to-many class="model.User" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="ttsystem"/>
+  <table-filter match-name="types"/>
+  <table-filter match-name="user_has_department"/>
+  <table-filter match-name="user"/>
+  <table-filter match-name="alarm"/>
+  <table-filter match-name="person_type"/>
+  <table-filter match-name="login"/>
+  <table-filter match-name="log"/>
+  <table-filter match-name="company"/>
+  <table-filter match-name="rolls"/>
+  <table-filter match-name="alerts"/>
+  <table-filter match-name="request"/>
+  <table-filter match-name="systems_has_user"/>
+  <table-filter match-name="activities"/>
+  <table-filter match-name="systems"/>
+  <table-filter match-name="systems_has_parameters"/>
+  <table-filter match-name="tt_update"/>
+  <table-filter match-name="heartbeat"/>
+  <table-filter match-name="category"/>
+  <table-filter match-name="lesson_learnt"/>
+  <table-filter match-name="tt"/>
+  <table-filter match-name="alarmname"/>
+  <table-filter match-name="roll_has_activities"/>
+  <table-filter match-name="parameters"/>
+  <table-filter match-name="periodic"/>
+  <table-filter match-name="department"/>
+</hibernate-reverse-engineering>

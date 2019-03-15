@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 29, 2017 2:09:58 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.Systems" table="systems" catalog="ttsystem" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="company" class="model.Company" fetch="select">
+            <column name="company" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" length="100" />
+        </property>
+        <property name="description" type="string">
+            <column name="description" length="225" />
+        </property>
+        <property name="status" type="java.lang.Integer">
+            <column name="status" />
+        </property>
+        <property name="lon" type="string">
+            <column name="lon" length="45" />
+        </property>
+        <property name="lat" type="string">
+            <column name="lat" length="45" />
+        </property>
+        <property name="url" type="string">
+            <column name="url" length="45" />
+        </property>
+        <property name="ip" type="string">
+            <column name="ip" length="45" />
+        </property>
+        <property name="spare1" type="string">
+            <column name="spare1" length="45" />
+        </property>
+        <property name="spare2" type="string">
+            <column name="spare2" length="45" />
+        </property>
+        <set name="alarms" table="alarm" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="system" not-null="true" />
+            </key>
+            <one-to-many class="model.Alarm" />
+        </set>
+        <set name="tts" table="tt" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="system" />
+            </key>
+            <one-to-many class="model.Tt" />
+        </set>
+        <set name="heartbeats" table="heartbeat" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="systems" not-null="true" />
+            </key>
+            <one-to-many class="model.Heartbeat" />
+        </set>
+        <set name="systemsHasUsers" table="systems_has_user" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="systems" not-null="true" />
+            </key>
+            <one-to-many class="model.SystemsHasUser" />
+        </set>
+        <set name="requests" table="request" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="systems" not-null="true" />
+            </key>
+            <one-to-many class="model.Request" />
+        </set>
+        <set name="systemsHasParameterses" table="systems_has_parameters" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="systems" not-null="true" />
+            </key>
+            <one-to-many class="model.SystemsHasParameters" />
+        </set>
+    </class>
+</hibernate-mapping>

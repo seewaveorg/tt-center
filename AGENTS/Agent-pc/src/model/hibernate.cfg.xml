@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ttsystem?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">taurus</property>
+    <mapping resource="model/Activities.hbm.xml"/>
+    <mapping resource="model/Category.hbm.xml"/>
+    <mapping resource="model/Tt.hbm.xml"/>
+    <mapping resource="model/TtUpdate.hbm.xml"/>
+    <mapping resource="model/Alerts.hbm.xml"/>
+    <mapping resource="model/Types.hbm.xml"/>
+    <mapping resource="model/Systems.hbm.xml"/>
+    <mapping resource="model/LessonLearnt.hbm.xml"/>
+    <mapping resource="model/Department.hbm.xml"/>
+    <mapping resource="model/Alarmname.hbm.xml"/>
+    <mapping resource="model/Rolls.hbm.xml"/>
+    <mapping resource="model/Login.hbm.xml"/>
+    <mapping resource="model/User.hbm.xml"/>
+    <mapping resource="model/SystemsHasUser.hbm.xml"/>
+    <mapping resource="model/Request.hbm.xml"/>
+    <mapping resource="model/Periodic.hbm.xml"/>
+    <mapping resource="model/Company.hbm.xml"/>
+    <mapping resource="model/RollHasActivities.hbm.xml"/>
+    <mapping resource="model/UserHasDepartment.hbm.xml"/>
+    <mapping resource="model/Heartbeat.hbm.xml"/>
+    <mapping resource="model/SystemsHasParameters.hbm.xml"/>
+    <mapping resource="model/Alarm.hbm.xml"/>
+    <mapping resource="model/PersonType.hbm.xml"/>
+    <mapping resource="model/Log.hbm.xml"/>
+    <mapping resource="model/Parameters.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>

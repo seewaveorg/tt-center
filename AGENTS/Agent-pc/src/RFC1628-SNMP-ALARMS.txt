@@ -1,0 +1,24 @@
+1.3.6.1.2.1.33.1.6.3.1	upsAlarmBatteryBad	One or more batteries have been determined to require replacement.	1	1
+1.3.6.1.2.1.33.1.6.3.2	upsAlarmOnBattery	The UPS is drawing power from the batteries.	2	2
+1.3.6.1.2.1.33.1.6.3.3	upsAlarmLowBattery	The remaining battery run-time is less than or equal to upsConfigLowBattTime.	3	3
+1.3.6.1.2.1.33.1.6.3.4	upsAlarmDepletedBattery	The UPS will be unable to sustain the present load when and if the utility power is lost	1	4
+1.3.6.1.2.1.33.1.6.3.5	upsAlarmTempBad	        A temperature is out of tolerance	2	5
+1.3.6.1.2.1.33.1.6.3.6	upsAlarmInputBad 	An input condition is out of tolerance.	3	6
+1.3.6.1.2.1.33.1.6.3.7	upsAlarmOutputBad 	An output condition (other than OutputOverload) is out of tolerance.	1	7
+1.3.6.1.2.1.33.1.6.3.8	upsAlarmOutputOverload	The output load exceeds the UPS output capacity	2	8
+1.3.6.1.2.1.33.1.6.3.9	upsAlarmOnBypass	The Bypass is presently engaged on the UPS.	3	9
+1.3.6.1.2.1.33.1.6.3.10	upsAlarmBypassBad	The Bypass is out of tolerance.	1	10
+1.3.6.1.2.1.33.1.6.3.11	upsAlarmOutputOffAsRequested	The UPS has shutdown as requested, i.e., the output is off.	2	11
+1.3.6.1.2.1.33.1.6.3.12	upsAlarmUpsOffAsRequested	The entire UPS has shutdown as commanded.	3	12
+1.3.6.1.2.1.33.1.6.3.13	upsAlarmChargerFailed	An uncorrected problem has been detected within the UPS charger subsystem.	1	13
+1.3.6.1.2.1.33.1.6.3.14	upsAlarmUpsOutputOff	The output of the UPS is in the off state.	2	14
+1.3.6.1.2.1.33.1.6.3.15	upsAlarmUpsSystemOff	The UPS system is in the off state.	3	15
+1.3.6.1.2.1.33.1.6.3.16	upsAlarmFanFailure	The failure of one or more fans in the UPS has been detected.	1	16
+1.3.6.1.2.1.33.1.6.3.17	upsAlarmFuseFailure	The failure of one or more fuses has been detected.	2	17
+1.3.6.1.2.1.33.1.6.3.18	upsAlarmGeneralFault	A general fault in the UPS has been detected.	3	18
+1.3.6.1.2.1.33.1.6.3.19	upsAlarmDiagnosticTestFailed	The result of the last diagnostic test indicates a failure.	1	19
+1.3.6.1.2.1.33.1.6.3.20	upsAlarmCommunicationsLost 	A problem has been encountered in the communications between the agent and the UPS.	2	20
+1.3.6.1.2.1.33.1.6.3.21	upsAlarmAwaitingPower	The UPS output is off and the UPS is awaiting the return of input power.	3	21
+1.3.6.1.2.1.33.1.6.3.22	upsAlarmShutdownPending	A upsShutdownAfterDelay countdown is underway.	1	22
+1.3.6.1.2.1.33.1.6.3.23	upsAlarmShutdownImminent	The UPS will turn off power to the load in less than 5 seconds; this may be either a timed shutdown or a low battery shutdown.	2	23
+1.3.6.1.2.1.33.1.6.3.24	upsAlarmTestInProgress	A test is in progress, as initiated and indicated by the Test Group.  Tests initiated via other implementation-specific mechanisms can indicate the presence of the testing in the alarm table, if desired, via a OBJECT-IDENTITY macro in the MIB document specific to that implementation and are outside the scope of this OBJECT-IDENTITY.	3	24	 		 				 				
